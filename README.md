@@ -20,7 +20,9 @@ Desenvolver uma API para venda de ingressos de eventos, garantindo que o sistema
 
 ## Modelagem do banco de dados
 ### Modelo Entidade-Relacionamento (MER)
-<!-- Inserir imagem do MER -->
+
+![MER do sistema de ingressos](docs/images/MER_sistema_ingressos.png)
 
 ### Modelo Relacional (MR)
-<!-- Inserir imagem do MR -->
+
+![MR do sistema de ingressos](docs/images/MR_sistema_ingressos.png)
