@@ -1,5 +1,5 @@
 HELP.md
-target/
+ticket_flow/target/
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
