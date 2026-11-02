@@ -9,6 +9,8 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "tb_event")
@@ -44,6 +46,9 @@ public class Event {
     @CreationTimestamp
     @Column(name = "created_at",nullable = false,updatable = false)
     private Instant createdAt;
+
+    @OneToMany(mappedBy = "event", fetch = FetchType.LAZY)
+    private List<TicketLot> ticketLots = new ArrayList<>();
 
     protected Event() {
     }
