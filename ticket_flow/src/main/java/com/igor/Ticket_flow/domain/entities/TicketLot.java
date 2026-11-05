@@ -65,4 +65,12 @@ public class TicketLot {
         this.salesEndAt = salesEndAt;
         this.event = event;
     }
+
+    public void decreaseTicketsAvailable(Integer quantity){
+        this.availableQuantity = availableQuantity - quantity;
+    }
+
+    public void increaseTicketsAvailable(Integer quantity){
+        this.availableQuantity = availableQuantity + quantity;
+    }
 }

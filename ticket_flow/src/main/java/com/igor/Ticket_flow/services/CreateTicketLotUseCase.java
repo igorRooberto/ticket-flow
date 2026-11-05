@@ -3,6 +3,8 @@ package com.igor.Ticket_flow.services;
 import com.igor.Ticket_flow.domain.entities.Event;
 import com.igor.Ticket_flow.domain.entities.TicketLot;
 import com.igor.Ticket_flow.exceptions.BadRequestException;
+import com.igor.Ticket_flow.exceptions.NotFoundException;
+import com.igor.Ticket_flow.repositories.EventRepository;
 import com.igor.Ticket_flow.repositories.TicketLotRepository;
 import com.igor.Ticket_flow.view.dto.request.CreateTicketLotRequestDto;
 import com.igor.Ticket_flow.view.dto.response.TicketLotResponseDto;
@@ -10,16 +12,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class TicketLotService {
+public class CreateTicketLotUseCase {
 
     private final TicketLotRepository ticketLotRepository;
-    private final EventService eventService;
+    private final EventRepository eventRepository;
 
-    public TicketLotResponseDto createTicketLot(CreateTicketLotRequestDto dto){
+    public TicketLotResponseDto execute(CreateTicketLotRequestDto dto){
 
         if(dto.salesStartAt().isBefore(LocalDateTime.now())){
             throw new BadRequestException("Data De Inicio Inválida");
@@ -29,7 +30,8 @@ public class TicketLotService {
             throw new BadRequestException("Data De Inicio Inválida");
         }
 
-        Event event = eventService.findEventById(dto.eventId());
+         Event event = eventRepository.findById(dto.eventId())
+                .orElseThrow(() -> new NotFoundException("Evento Não Encontrado"));
 
         TicketLot ticketLot = TicketLot.builder()
                 .name(dto.name())
@@ -53,8 +55,4 @@ public class TicketLotService {
                 ticketLot.getSalesEndAt()
         );
     }
-
-
-
-
 }

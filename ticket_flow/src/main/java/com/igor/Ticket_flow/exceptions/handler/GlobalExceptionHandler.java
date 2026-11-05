@@ -1,6 +1,7 @@
 package com.igor.Ticket_flow.exceptions.handler;
 
 import com.igor.Ticket_flow.exceptions.BadRequestException;
+import com.igor.Ticket_flow.exceptions.ConflictException;
 import com.igor.Ticket_flow.exceptions.NotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
@@ -39,6 +40,19 @@ public class GlobalExceptionHandler {
         );
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+    }
+
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<ExceptionMessage> handleConflictException(ConflictException ex, HttpServletRequest request){
+        ExceptionMessage message = new ExceptionMessage(
+                Instant.now(),
+                409,
+                "CONFLICT",
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(message);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

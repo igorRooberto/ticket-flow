@@ -18,7 +18,9 @@ CREATE TABLE tb_event(
     status VARCHAR(20) NOT NULL,
     created_at TIMESTAMP NOT NULL,
 
-    CONSTRAINT pk_event PRIMARY KEY(id)
+    CONSTRAINT pk_event PRIMARY KEY(id),
+    CONSTRAINT ck_event_date CHECK ( end_date_time > start_date_time ),
+    CONSTRAINT ck_event_status CHECK (status IN ('DRAFT', 'PUBLISHED', 'CANCELED', 'FINISHED'))
 );
 
 CREATE TABLE tb_ticket_lot(
@@ -33,7 +35,10 @@ CREATE TABLE tb_ticket_lot(
     event_id BIGINT NOT NULL,
 
     CONSTRAINT pk_ticket_lot PRIMARY KEY (id),
-    CONSTRAINT fk_event_id FOREIGN KEY (event_id) REFERENCES tb_event(id)
+    CONSTRAINT fk_event_id FOREIGN KEY (event_id) REFERENCES tb_event(id),
+    CONSTRAINT ck_ticket_lot_dates CHECK (sales_end_at > sales_start_at),
+    CONSTRAINT ck_ticket_lot_quantities CHECK (available_quantity >= 0 AND total_quantity >= 0 AND available_quantity <= total_quantity),
+    CONSTRAINT ck_ticket_lot_price CHECK (price >= 0)
 );
 
 CREATE TABLE tb_reservation(
@@ -47,7 +52,10 @@ CREATE TABLE tb_reservation(
 
     CONSTRAINT pk_reservation PRIMARY KEY (id),
     CONSTRAINT fk_customer FOREIGN KEY (customer_id) REFERENCES tb_customer (id),
-    CONSTRAINT fk_ticket_lot FOREIGN KEY (ticket_lot_id) REFERENCES tb_ticket_lot (id)
+    CONSTRAINT fk_ticket_lot FOREIGN KEY (ticket_lot_id) REFERENCES tb_ticket_lot (id),
+    CONSTRAINT ck_reservation_quantities CHECK ( quantity > 0 ),
+    CONSTRAINT ck_reservation_status CHECK ( status IN('PENDING', 'CONFIRMED', 'CANCELED', 'EXPIRED')),
+    CONSTRAINT ck_reservation_times CHECK ( expires_at > created_at )
 );
 
 CREATE TABLE tb_order(
@@ -60,5 +68,8 @@ CREATE TABLE tb_order(
 
     CONSTRAINT pk_order PRIMARY KEY (id),
     CONSTRAINT fk_reservation FOREIGN KEY (reservation_id) REFERENCES tb_reservation(id),
-    CONSTRAINT fk_customer FOREIGN KEY (customer_id) REFERENCES tb_customer(id)
+    CONSTRAINT  uk_reservation UNIQUE(reservation_id),
+    CONSTRAINT fk_customer FOREIGN KEY (customer_id) REFERENCES tb_customer(id),
+    CONSTRAINT ck_order_total_amount CHECK ( total_amount >= 0 ),
+    CONSTRAINT ck_order_status CHECK ( status IN('PENDING', 'PAID', 'CANCELED', 'REFUNDED', 'EXPIRED'))
 );
