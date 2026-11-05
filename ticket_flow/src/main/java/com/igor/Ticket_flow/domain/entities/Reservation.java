@@ -1,6 +1,7 @@
 package com.igor.Ticket_flow.domain.entities;
 
 import com.igor.Ticket_flow.domain.enums.ReservationStatus;
+import com.igor.Ticket_flow.exceptions.ConflictException;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -43,6 +44,7 @@ public class Reservation {
     @JoinColumn(name = "ticket_lot_id",nullable = false)
     private TicketLot ticketLot;
 
+    //Hibernate
     protected Reservation(){
 
     }
@@ -54,5 +56,25 @@ public class Reservation {
         this.expiresAt = expiresAt;
         this.customer = customer;
         this.ticketLot = ticketLot;
+    }
+
+    public void expiredReservation(){
+        this.status = ReservationStatus.EXPIRED;
+    }
+
+    public void checkReservation(){
+
+        if(this.getStatus() == ReservationStatus.EXPIRED){
+            throw new ConflictException("Esta Reserva está expirada");
+        }
+
+        if (this.getStatus() == ReservationStatus.CANCELED){
+            throw new ConflictException("Esta Reserva já foi cancelada");
+        }
+
+        if(this.getStatus() == ReservationStatus.CONFIRMED){
+            throw new ConflictException("Esta Reserva já foi paga");
+        }
+
     }
 }

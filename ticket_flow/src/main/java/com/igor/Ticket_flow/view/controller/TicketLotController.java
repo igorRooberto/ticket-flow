@@ -1,6 +1,6 @@
 package com.igor.Ticket_flow.view.controller;
 
-import com.igor.Ticket_flow.services.TicketLotService;
+import com.igor.Ticket_flow.services.CreateTicketLotUseCase;
 import com.igor.Ticket_flow.view.dto.request.CreateTicketLotRequestDto;
 import com.igor.Ticket_flow.view.dto.response.TicketLotResponseDto;
 import jakarta.validation.Valid;
@@ -17,11 +17,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class TicketLotController {
 
-    private final TicketLotService ticketLotService;
+    private final CreateTicketLotUseCase createTicketLotUseCase;
 
     @PostMapping("/create/lot")
     public ResponseEntity<TicketLotResponseDto> createTicketLot(@RequestBody @Valid CreateTicketLotRequestDto dto){
-        TicketLotResponseDto responseDto = ticketLotService.createTicketLot(dto);
+        TicketLotResponseDto responseDto = createTicketLotUseCase.execute(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 }
